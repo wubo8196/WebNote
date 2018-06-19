@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.web.po.ShareNote" table="ShareNote">
+        <id name="shareId" column="shareId">
+        </id>
+        <property name="shareTitle" column="shareTitle"/>
+        <property name="shareDate" column="shareDate" type="timestamp"/>
+        <many-to-one name="noteUser" column="shareNote_userId" lazy="false" class="com.web.po.NoteUser" />
+        <one-to-one name="oneNote" class="com.web.po.OneNote" constrained="true"/>
+        <property name="currency" column="currency" type="double"/>
+        <property name="viewTotal" column="viewTotal" type="integer"/>
+    </class>
+</hibernate-mapping>

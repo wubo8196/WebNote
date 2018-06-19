@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 先配置包结构 -->
+	<package name="WebExam" extends="struts-default" namespace="/">
+		<!-- 拦截器 -->
+		<interceptors>
+			<interceptor name="loginInterceptor"
+				class="loginInterceptor" />
+		</interceptors>
+		<!--配置全局结果页面 -->
+		<global-results>
+			<result name="login" type="redirect">/page/user/login.jsp</result>
+			<result name="indexAction" type="redirectAction">system_index.action</result>
+			<result name="indexPage" type="dispatcher">/page/index.jsp</result>
+		</global-results>
+
+		<!-- 验证码 -->
+		<action name="checkCode_*" class="checkCode" method="{1}" />
+		<!-- 邮箱验证 -->
+		<action name="checkEmail_*" class="checkEmail" method="{1}" />
+		<!-- 文件上传 -->
+		<action name="upload_*" class="uploadAction" method="{1}" />
+		<!-- 用户模块 -->
+		<action name="user_*" class="userAction" method="{1}">
+			<!-- 配置系统的默认拦截器 -->
+			<interceptor-ref name="defaultStack" />
+			<!-- 应用自定义的mySimple拦截器 -->
+			<interceptor-ref name="loginInterceptor">
+				<!-- 指定execute方法不需要被拦截 -->
+				<param name="excludeMethods">activate,login,login,registSubmit,findPass,toUpdatePassPage,updatePassSubmit</param>
+			</interceptor-ref>
+			<result name="registEnd" type="dispatcher">/page/user/registEnd.jsp
+			</result>
+			<result name="success" type="redirectAction">user_index.action</result>
+			<result name="toFindPass" type="dispatcher">/page/user/toFindPass.jsp</result>
+			<result name="updatePass" type="dispatcher">/page/user/updatePass.jsp</result>
+		</action>
+		<!-- 笔记本模块 -->
+		<action name="noteBook_*" class="noteBookAction" method="{1}">
+			<!-- 配置系统的默认拦截器 -->
+			<interceptor-ref name="defaultStack" />
+			<!-- 应用自定义的mySimple拦截器 -->
+			<interceptor-ref name="loginInterceptor">
+			</interceptor-ref>
+			<result name="updateNoteBookPage" type="dispatcher">/page/note/editNoteBook.jsp
+			</result>
+		</action>
+		<!--笔记模块 -->
+		<action name="oneNote_*" class="oneNoteAction" method="{1}">
+			<!-- 配置系统的默认拦截器 -->
+			<interceptor-ref name="defaultStack" />
+			<!-- 应用自定义的mySimple拦截器 -->
+			<interceptor-ref name="loginInterceptor" />
+			<result name="oneNoteListPage" type="dispatcher">/page/note/oneNoteList.jsp
+			</result>
+			<result name="oneNoteDetail" type="dispatcher">/page/note/oneNoteDetail.jsp
+			</result>
+			<result name="editOneNote" type="dispatcher">/page/note/editOneNote.jsp
+			</result>
+		</action>
+		<!-- 分享模块 -->
+		<action name="shareNote_*" class="shareNoteAction" method="{1}">
+			<!-- 配置系统的默认拦截器 -->
+			<interceptor-ref name="defaultStack" />
+			<!-- 应用自定义的mySimple拦截器 -->
+			<interceptor-ref name="loginInterceptor">
+			</interceptor-ref>
+			<result name="shareOneNote" type="dispatcher">/page/share/shareOneNote.jsp
+			</result>
+			<result name="allShare" type="dispatcher">/page/share/allShare.jsp
+			</result>
+			<result name="shareNoteDetail" type="dispatcher">/page/share/shareNoteDetail.jsp</result>
+		</action>
+		<!-- 系统模块 -->
+		<action name="system_*" class="systemAction" method="{1}">
+			<!-- 配置系统的默认拦截器 -->
+			<interceptor-ref name="defaultStack" />
+			<!-- 应用自定义的mySimple拦截器 -->
+			<interceptor-ref name="loginInterceptor" />
+		</action>
+		<!-- 支付模块 -->
+		<!-- 收款通知回调 -->
+		<action name="payNotifyAction_*" class="payNotifyAction" method="{1}"></action>
+		<!-- 支付处理 -->
+		<action name="vipPayAction_*" class="vipPayAction" method="{1}">
+			<result name="payVip" type="dispatcher">/page/share/payVip.jsp</result>
+		</action>
+	</package>
+
+</struts>
+
+
+
+
+
+
+
+
+
+
+
+
+

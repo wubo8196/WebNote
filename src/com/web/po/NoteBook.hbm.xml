@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.web.po.NoteBook" table="NoteBook">
+        <id name="bookId" column="bookId">
+            <generator class="native"/>
+        </id>
+        <many-to-one name="noteUser" column="book_userId" class="com.web.po.NoteUser"/>
+        <many-to-one name="noteType" column="noteType" class="com.web.po.NoteType"/>
+        <set name="oneNoteSet" cascade="save-update,delete" sort="natural" lazy="false">
+        	<key column="note_bookId"/>
+        	<one-to-many class="com.web.po.OneNote"/>
+        </set>
+        <property name="bookName" column="bookName"/>
+        <property name="bookDesc" column="bookDesc"/>
+        <property name="createDate" column="createDate" type="timestamp"/>
+    </class>
+</hibernate-mapping>

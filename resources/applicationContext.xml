@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<!-- 配置c3p0的连接池 -->
+	<bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://106.14.124.85:3306/WebNote?autoReconnect=true" />
+		<property name="user" value="root" />
+		<property name="password" value="Wb278865512." />
+	</bean>
+	<!-- 使用sessionFactory加载Hibernate配置 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 先加载连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 加载方言，加载可选配置 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="mappingDirectoryLocations">
+			<list>
+				<value>classpath:/com/web/po</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置平台事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 开启事务注解 -->
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+	<!-- 拦截器 -->
+	<bean name="loginInterceptor"
+		class="com.web.action.LoginInterceptor" scope="prototype" />
+	<!-- 验证码 -->
+	<bean name="checkCode" class="com.web.action.CheckCode"
+		scope="prototype" />
+	<!-- 邮箱地址检测 -->
+	<bean name="checkEmail" class="com.web.action.CheckEmail"
+		scope="prototype">
+		<property name="noteUserBo" ref="noteUserBo" />
+	</bean>
+	<!-- 文件上传 -->
+	<bean name="uploadAction" class="com.web.action.UploadAction"
+		scope="prototype" />
+	<!-- 用户模块 -->
+	<bean name="noteUserDao" class="com.web.dao.NoteUserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean name="noteUserBo" class="com.web.bo.NoteUserBoImpl">
+		<property name="noteUserDao" ref="noteUserDao" />
+		<property name="orderBo" ref="orderBo"/>
+	</bean>
+	<bean name="userAction" class="com.web.action.UserAction"
+		scope="prototype">
+		<property name="noteUserBo" ref="noteUserBo"></property>
+	</bean>
+	<!-- 笔记本类型模块 -->
+	<bean name="noteTypeDao" class="com.web.dao.NoteTypeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean name="noteTypeBo" class="com.web.bo.NoteTypeBoImpl">
+		<property name="noteTypeDao" ref="noteTypeDao" />
+	</bean>
+	<!-- 笔记本模块 -->
+	<bean name="noteBookDao" class="com.web.dao.NoteBookDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean name="noteBookBo" class="com.web.bo.NoteBookBoImpl">
+		<property name="noteBookDao" ref="noteBookDao" />
+	</bean>
+	<bean name="noteBookAction" class="com.web.action.NoteBookAction"
+		scope="prototype">
+		<property name="noteBookBo" ref="noteBookBo" />
+		<property name="noteTypeBo" ref="noteTypeBo" />
+	</bean>
+	<!-- 笔记模块 -->
+	<bean name="oneNoteDao" class="com.web.dao.OneNoteDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean name="oneNoteBo" class="com.web.bo.OneNoteBoImpl">
+		<property name="oneNoteDao" ref="oneNoteDao"/>
+		<property name="noteBookBo" ref="noteBookBo"/>
+		<property name="shareNotebo" ref="shareNoteBo"/>
+	</bean>
+	<bean name="oneNoteAction" class="com.web.action.OneNoteAction"
+		scope="prototype">
+		<property name="noteBookBo" ref="noteBookBo" />
+		<property name="oneNoteBo" ref="oneNoteBo"/>
+		<property name="noteUserBo" ref="noteUserBo"/>
+	</bean>
+	<!-- 分享模块 -->
+	<bean name="shareNoteDao" class="com.web.dao.ShareNoteDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean name="shareNoteBo" class="com.web.bo.ShareNoteBoImpl">
+		<property name="shareNoteDao" ref="shareNoteDao"/>
+		<property name="noteUserBo" ref="noteUserBo"/>
+		<property name="oneNoteBo" ref="oneNoteBo"/>
+	</bean>
+	<bean name="shareNoteAction" class="com.web.action.ShareNoteAction" scope="prototype">
+		<property name="oneNoteBo" ref="oneNoteBo"/>
+		<property name="noteUserBo" ref="noteUserBo"/>
+		<property name="shareNoteBo" ref="shareNoteBo"/>
+	</bean>
+	<!-- 系统模块 -->
+	<bean name="systemAction" class="com.web.action.SystemAction"
+		scope="prototype">
+		<property name="noteUserBo" ref="noteUserBo" />
+	</bean>
+	<!-- vip支付模块 -->
+	<bean name="payNotifyAction" class="com.web.action.PayNotifyAction">
+		<property name="noteUserBo" ref="noteUserBo"/>
+		<property name="orderBo" ref="orderBo"/>
+	</bean>
+	<bean name="vipPayAction" class="com.web.action.VipPayAction">
+		<property name="noteUserBo" ref="noteUserBo"/>
+		<property name="orderBo" ref="orderBo"/>
+	</bean>
+	<!-- 订单模块 -->
+	<bean name="orderDao" class="com.web.dao.OrderDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean name="orderBo" class="com.web.bo.OrderBoImpl">
+		<property name="noteUserBo" ref="noteUserBo"/>
+		<property name="orderDao" ref="orderDao"/>
+	</bean>
+	<!-- 自动任务 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="timeTask" method="execute"
+			cron="0 0 0 1 1/1 ? " />
+	</task:scheduled-tasks>
+	<bean name="timeTask" class="com.web.utils.TimeTask"
+		lazy-init="false">
+	</bean>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+

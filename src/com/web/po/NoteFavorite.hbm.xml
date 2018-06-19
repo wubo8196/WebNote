@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.web.po.NoteFavorite" table="NoteFavorite">
+        <id name="favoriteId" column="favoriteId">
+            <generator class="native"/>
+        </id>
+        <set name="oneNoteSet" cascade="save-update,delete" sort="natural" lazy="false">
+        	<key column="note_favoriteId"/>
+        	<one-to-many class="com.web.po.OneNote"/>
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.web.po.Order" table="vipOrder">
+        <id name="vipOrderId" column="vipOrderId">
+            <generator class="native"/>
+        </id>
+        <property name="createDate" column="createDate" type="timestamp"/>
+        <property name="state" column="orderState" type="long"/>
+        <property name="userId" column="userId" type="long"/>
+        <property name="month" column="orderMonth" type="long"/>
+        <property name="price" column="orderPrice" type="double"/>
+    </class>
+</hibernate-mapping>

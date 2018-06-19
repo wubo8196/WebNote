@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.web.po.OneNote" table="OneNote">
+        <id name="noteId" column="noteId">
+            <generator class="native"/>
+        </id>
+        <many-to-one name="noteUser" cascade="none" column="noteUserId" class="com.web.po.NoteUser"/>
+        <many-to-one name="noteBook" column="note_bookId" class="com.web.po.NoteBook" />
+        <many-to-one name="noteFavorite" column="note_favoriteId" class="com.web.po.NoteFavorite"/>
+        <property name="title" column="title"/>
+        <property name="body" column="body" length="20000"/>
+        <property name="createDate" column="createDate" type="timestamp"/>
+        <one-to-one name="shareNote" cascade="none" class="com.web.po.ShareNote"/>
+    </class>
+</hibernate-mapping>

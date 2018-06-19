@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.web.po.NoteUser" table="NoteUser">
+        <id name="userId" column="userId">
+            <generator class="native"/>
+        </id>
+        <property name="userName" column="userName"/>
+        <property name="userEmail" column="userEmail"/>
+        <property name="userPassword" column="userPassword"/>
+        <property name="token" column="token"/>
+        <property name="state" column="state"/>
+        <property name="createDate" column="createDate" type="date"/>
+        <property name="vipEndDate" column="vipEndDate" type="date"/>
+        <property name="privilege" column="privilege" type="long"/>
+        <property name="currency" column="currency" type="double"/>
+        <property name="userDesc" column="userDesc"/>
+        <property name="userIcon" column="userIcon"/>
+        <set name="noteBookSet" order-by="bookId" cascade="save-update,delete" lazy="false">
+        	<key column="book_userId"/>
+        	<one-to-many class="com.web.po.NoteBook"/>
+        </set>
+        <set name="shareNoteSet" cascade="save-update" lazy="false">
+        	<key column="user_shareId"/>
+        	<many-to-many class="com.web.po.ShareNote"/>
+        </set>
+        <one-to-one name="noteFavorite" class="com.web.po.NoteFavorite" cascade="save-update" constrained="true" lazy="false"/>
+    </class>
+</hibernate-mapping>
